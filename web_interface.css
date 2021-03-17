@@ -1,0 +1,8 @@
+.row {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 5%;
+  }
+.col {
+    text-align: center;
+}
