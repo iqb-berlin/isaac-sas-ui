@@ -19,7 +19,7 @@
             <!-- Load our React component. -->
             <script src="interaction/display_models.js"></script>
             <br><br>
-            <p>You need to use one of these model IDs for prediction to use a model that has been trained before!</p>
+            <p>You need to use one of these model IDs for prediction to use a model that has been trained before.</p>
         </div>
 
         <!-- Add all model components -->
@@ -29,20 +29,31 @@
 
             <p>Set the model ID of the model you want to use.</p>
             <input type="text" placeholder="Enter a Model ID" id="trainId">
-            <button id="trainIdButton" type="button">Store model ID</button>
+            <button id="trainIdButton" type="button">Store train model ID</button>
+            <br><br>
+            <p><b>Current ID:</b></p>
+            <div id="currentId"></div>
+            <br><br><br><br><br>
 
-            <!-- <input type="text" id="trainId" placeholder="Enter a Model ID">
+            <p>Upload file (CSV) with your training data.</p>
+            <input type="text" placeholder="Enter a CSV File Name" id="trainFile">
+            <button id="trainFileButton" type="button">Store file name</button>
             <br><br>
-            <button id="trainIdButton" type="button">Click to store the model ID</button> -->
+            <p><b>Current File Name:</b></p>
+            <br>
+            <div id="currentFileName"></div>
+            <br><br><br>
+
+            <p>Train a new model on your data.</p>
+            <br><br>
+            <button id="trainButton" type="button">Start training</button>
             <script src="interaction/train_model.js"></script>  
-            <br><br>
-            <p>Train a new model on your data!</p>
         </div>
         <div class="col">
         <h1>Predict</h1>
         <br><br>
-            <p>Hello World!<p>
-            <p>Make predictions for your data with a pretrained model!</p>
+            <p>Make predictions for your data with a pretrained model.</p>
+            
         </div>
       </div>
 </body>
