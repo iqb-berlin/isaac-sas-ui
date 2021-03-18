@@ -25,6 +25,10 @@ function fetchStoredModels() {
   });
 }
 
+
+
+
+
 // Todo: Output all IDs as a bulleted list.
 // function prepare_output(resp_obj) {
 //   for (i=0; i<resp_obj.modelIds.length; i++) {
@@ -32,39 +36,28 @@ function fetchStoredModels() {
 //   }
 // }
 
-// Fetch stored models once when the script is started.
-// TODO: Once the button is turned into a permanent list, call
-//       the function every time a new model is added.
 var respObj;
 var respStatus;
+
 fetchStoredModels();
 
-const e = React.createElement;
+setInterval(function() {
+  fetchStoredModels();
+}, 50000);
 
-class ModelIdButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { clicked: false };
+
+setInterval(function() {
+  document.getElementById("ids").innerHTML = respObj.modelIds.toString().replace(/,/g, "  |  ");//respObj.modelIds.toString().replace(/,/g, "  |  ");
+}, 5000);
+
+
+setInterval(function() {
+  if (doesConnectionExist(respStatus)) {
+    document.getElementById("connection")
+    .innerHTML = "Connection established. Server is running.";
   }
-
-  render() {
-    if (this.state.clicked) {
-      if ( ! doesConnectionExist(respStatus) ) {
-        return "The server does not seem to be running. No connection could be established."
-      }
-
-    // Try to present the model IDs each on a separate line.
-    return respObj.modelIds.toString().replace(/,/g, "  |  ");
-    }
-
-    return e(
-      'button',
-      { onClick: () => this.setState({ clicked: true }) },
-      'Press to get all available model IDs.'
-    );
+  else {
+    document.getElementById("connection")
+    .innerHTML = "The server does not seem to be running. No connection could be established.";
   }
-}
-
-
-const domContainer = document.querySelector('#model_id_button_container');
-ReactDOM.render(e(ModelIdButton), domContainer);
+}, 2000);
