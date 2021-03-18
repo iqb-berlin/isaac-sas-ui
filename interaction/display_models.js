@@ -16,12 +16,13 @@ function fetchStoredModels() {
 })
   .then(response => {
     respStatus = response.status;
-    response.json();
+    return response.json();
   })
   .then(data => respObj = data)
   .then(() => console.log(respObj))
   .catch((error) => {
       console.error('Error:', error);
+      respStatus = 400;
   });
 }
 
@@ -41,14 +42,15 @@ var respStatus;
 
 fetchStoredModels();
 
-setInterval(function() {
-  fetchStoredModels();
-}, 50000);
-
 
 setInterval(function() {
-  document.getElementById("ids").innerHTML = respObj.modelIds.toString().replace(/,/g, "  |  ");//respObj.modelIds.toString().replace(/,/g, "  |  ");
-}, 5000);
+    fetchStoredModels();
+  }, 5000);
+
+
+  setInterval(function() {
+    document.getElementById("ids").innerHTML = respObj.modelIds.toString().replace(/,/g, "  |  ");//respObj.modelIds.toString().replace(/,/g, "  |  ");
+  }, 3000);
 
 
 setInterval(function() {
