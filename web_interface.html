@@ -10,7 +10,7 @@
             <h1>Display Model IDs</h1>
             <br><br>
             <script src="interaction/display_models.js"></script>
-            <p>Currently Available IDs:</p>
+            <p><b>Currently Available IDs:</b></p>
             <div id="ids"></div>
             <br><br>
             <p>You need to use one of these model IDs for prediction to use a model that has been trained before.</p>
@@ -22,7 +22,7 @@
         <!-- Add all model components -->
         <div class="col">
             <h1>Train a Model</h1>
-            <br><br><br>
+            <br><br>
 
             <p>Set the model ID of the model you want to use.</p>
             <input type="text" placeholder="Enter a Model ID" id="trainId">
@@ -33,15 +33,17 @@
             <br><br><br><br><br>
 
             <p>Upload file (CSV) with your training data.</p>
-            <input type="text" placeholder="Enter a CSV File Name" id="trainFile">
-            <button id="trainFileButton" type="button">Store file name</button>
+            <input type="file" id="trainFile">
+            <!-- <button id="trainFileButton" type="button">Store file name</button> -->
+            <!-- <h3>Contents of the file:</h3>
+            <pre id="file-content"></pre> -->
             <br><br>
             <p><b>Current File Name:</b></p>
             <div id="currentFileName"></div>
             <br><br><br>
 
             <p>Train a new model on your data.</p>
-            <br><br>
+            <br>
             <button id="trainButton" type="button">Start training</button>
             <script src="interaction/train_model.js"></script>  
         </div>

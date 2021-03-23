@@ -1,3 +1,8 @@
+/**
+ * Up here you get function definitions:
+ * Actual interaction at the bottom of the file.
+ */
+
 function saveModelId() {
     modelId = document.getElementById('trainId').value;
     console.log("model ID is: " + modelId);
@@ -20,6 +25,44 @@ function setCurrentFileName() {
 }
 
 
+function readTrainFile(e) {
+  var file = e.target.files[0];
+  if (!file) {
+    alert("Cannot read file!");
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    csvContents = e.target.result;
+  };
+  reader.readAsText(file);
+}
+
+
+function processCsvData(csvAsText) {
+  let allTextLines = csvAsText.split(/\r\n|\n/);
+
+  for (let i = 0; i < allTextLines.length; i++) {
+    let row = allTextLines[i].split(",");
+
+    let col = [];
+
+    for (let j = 0; j < row.length; j++) {
+      col.push(row[j]);
+    }
+
+    csvLines.push(col);
+  }
+}
+
+/**
+ * Instances are created on the basis of the CSV input.
+ */
+function createInstances() {
+  processCsvData(csvContents);
+  console.log(csvLines);
+}
+
 // TODO: ShortAnswerInstance must be created.
 // TODO: Input must be stored in ShortAnswerInstances and then passed to this function.
 function trainFromAnswers(modelId, uploadedInstances) {
@@ -33,7 +76,7 @@ function trainFromAnswers(modelId, uploadedInstances) {
   })
     .then(response => {
       respStatus = response.status;
-      response.json();
+      return response.json();
     })
     .then(data => respObj = data)
     .then(() => console.log(respObj))
@@ -43,9 +86,20 @@ function trainFromAnswers(modelId, uploadedInstances) {
   }
 
 
+/**
+ * Here starts:
+ * 1. Variable initialisation
+ * 2. event handling
+ */
+
 // Initialize modelId variable for usage.
 var modelId = "-";
 var fileName = "-";
+var csvContents = "";
+var csvLines = [];
+var uploadedInstances = null;
+var respObj;
+var respStatus;
 
 setCurrentId();
 setCurrentFileName();
@@ -54,13 +108,9 @@ setCurrentFileName();
 document.getElementById("trainIdButton").onclick = function() {saveModelId(), setCurrentId()};
 
 // Store the file name on click.
-document.getElementById("trainFileButton").onclick = function() {saveFileName(), setCurrentFileName()};
+document.getElementById('trainFile').addEventListener('change', readTrainFile, false);
 
-// TODO: Extract the information and create ShortAnswerInstances.
-//       Add the instances variable to the trainFromAnswers function below.
-
-var respObj;
-var respStatus;
 // Store the file name on click.
-document.getElementById("trainButton").onclick = function() {trainFromAnswers(modelId)};
+document.getElementById("trainButton").onclick = function() {createInstances()};
+// document.getElementById("trainButton").onclick = function() {createInstances(fileName), trainFromAnswers(uploadedInstances, modelId)};
 

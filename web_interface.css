@@ -3,9 +3,24 @@
     grid-auto-flow: column;
     gap: 5%;
   }
+
 .col {
     text-align: center;
 }
+
 #ids {
-  font-weight: bold;
+  font-style: italic;
+}
+
+#currentId {
+  font-style: italic;
+}
+
+#currentFileName {
+  font-style: italic;
+}
+
+#trainFile {
+  text-align-last: center;
+  margin: auto;
 }
