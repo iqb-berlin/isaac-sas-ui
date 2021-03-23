@@ -48,18 +48,18 @@ setInterval(function() {
   }, 10000);
 
 
-  setInterval(function() {
-    document.getElementById("ids").innerHTML = respObj.modelIds.toString().replace(/,/g, "  |  ");//respObj.modelIds.toString().replace(/,/g, "  |  ");
+setInterval(function() {
+    document.getElementById("ids").innerHTML = respObj.modelIds.toString().replace(/,/g, "  |  ");
   }, 6000);
 
 
 setInterval(function() {
   if (doesConnectionExist(respStatus)) {
     document.getElementById("connection")
-    .innerHTML = "Connection established. Server is running.";
+    .innerHTML = "<span style = 'color: green;'>Connection established. Server is running.</span>";
   }
   else {
     document.getElementById("connection")
-    .innerHTML = "The server does not seem to be running. No connection could be established.";
+  .innerHTML = "<span style = 'color: red;'>The server does not seem to be running. No connection could be established.</span>";
   }
 }, 5000);

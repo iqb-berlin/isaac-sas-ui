@@ -6,6 +6,7 @@
 </head>
 <body>
     <div class="row">
+
         <div class="col">
             <h1>Display Model IDs</h1>
             <br><br>
@@ -19,34 +20,31 @@
             <div id="connection"></div>
         </div>
 
-        <!-- Add all model components -->
         <div class="col">
             <h1>Train a Model</h1>
             <br><br>
 
-            <p>Set the model ID of the model you want to use.</p>
+            <p>Choose the model ID you want to give your trained model.</p>
             <input type="text" placeholder="Enter a Model ID" id="trainId">
             <button id="trainIdButton" type="button">Store train model ID</button>
             <br><br>
-            <p><b>Current ID:</b></p>
+            <p><b>Your model will get this ID:</b></p>
             <div id="currentId"></div>
             <br><br><br><br><br>
 
-            <p>Upload file (CSV) with your training data.</p>
+            <p>Upload TSV file with your training data.</p>
             <input type="file" id="trainFile">
-            <!-- <button id="trainFileButton" type="button">Store file name</button> -->
-            <!-- <h3>Contents of the file:</h3>
-            <pre id="file-content"></pre> -->
-            <br><br>
-            <p><b>Current File Name:</b></p>
-            <div id="currentFileName"></div>
             <br><br><br>
 
             <p>Train a new model on your data.</p>
             <br>
             <button id="trainButton" type="button">Start training</button>
+            <br><br>
+            <div id="trainResults"></div>
+            <br><br>
             <script src="interaction/train_model.js"></script>  
         </div>
+
         <div class="col">
         <h1>Predict</h1>
         <br><br>
