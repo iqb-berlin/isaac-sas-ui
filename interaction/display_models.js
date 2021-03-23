@@ -45,12 +45,12 @@ fetchStoredModels();
 
 setInterval(function() {
     fetchStoredModels();
-  }, 5000);
+  }, 10000);
 
 
   setInterval(function() {
     document.getElementById("ids").innerHTML = respObj.modelIds.toString().replace(/,/g, "  |  ");//respObj.modelIds.toString().replace(/,/g, "  |  ");
-  }, 3000);
+  }, 6000);
 
 
 setInterval(function() {
@@ -62,4 +62,4 @@ setInterval(function() {
     document.getElementById("connection")
     .innerHTML = "The server does not seem to be running. No connection could be established.";
   }
-}, 2000);
+}, 5000);

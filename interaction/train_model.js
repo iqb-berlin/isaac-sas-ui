@@ -1,16 +1,3 @@
-function doesConnectionExist(status) {
-    try {
-        if (status >= 200 && status < 304) {
-            return true;
-        } else {
-            return false;
-        }
-    } catch (error) {
-        return false;
-    }
-  }
-  
-
 function saveModelId() {
     modelId = document.getElementById('trainId').value;
     console.log("model ID is: " + modelId);
@@ -57,8 +44,11 @@ function trainFromAnswers(modelId, uploadedInstances) {
 
 
 // Initialize modelId variable for usage.
-var modelId = null;
-var fileName = null;
+var modelId = "-";
+var fileName = "-";
+
+setCurrentId();
+setCurrentFileName();
 
 // Store the modelId on click.
 document.getElementById("trainIdButton").onclick = function() {saveModelId(), setCurrentId()};
