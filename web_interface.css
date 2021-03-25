@@ -24,3 +24,7 @@
   text-align-last: center;
   margin: auto;
 }
+
+#trainResults {
+  text-align: left;
+}

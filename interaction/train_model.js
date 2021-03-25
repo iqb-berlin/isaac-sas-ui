@@ -102,10 +102,10 @@ function createInstances() {
   uploadedInstances = instances;
 }
 
-// TODO: ShortAnswerInstance must be created.
-// TODO: Input must be stored in ShortAnswerInstances and then passed to this function.
+
 function trainFromAnswers(modelId, uploadedInstances) {
-  if (modelId === "-") {
+  document.getElementById("trainingIsRunning").innerHTML = "Training is running... This can take some minutes.";
+  if (modelId === "-" | modelId === "") {
     alert("No model ID has been chosen. Choose one!");
     throw "No model ID has been chosen.";
   }
@@ -118,25 +118,71 @@ function trainFromAnswers(modelId, uploadedInstances) {
       body: JSON.stringify({instances: uploadedInstances, modelId: modelId})
   })
     .then(response => {
+      // Indicate that training is over.
+      document.getElementById("trainingIsRunning").innerHTML = "Training complete.";
+
       return response.json();
     })
     .then(data => trainRespObj = data)
-    .then(() => console.log(trainRespObj))
+    .then(() => {
+      writeTrainResults();
+      console.log(trainRespObj);
+    })
     .catch((error) => {
         console.error('Error:', error);
     });
   }
 
-// TODO: This function must be fixed and writing to file must be implemented.
-// It seems like only node js can write directly to json. Workaround?
+
 function writeTrainResults() {
-  let trainRespObjString = "Best Model:\n\n"
+  let metricClasses = ["macro avg", "micro avg", "True", "False"];
+  let metricTypes = ["f1-score", "recall", "precision", "support"];
 
-  let accuracy = trainRespObj.accuracy.value;
-  trainRespObjString += "Accuracy: " + accuracy.toString();
+  let resultString = "<span>";
+  // let metricsString = JSON.stringify(trainRespObj[modelId]["accuracy"]["metrics"], null, 4);
+  let metrics = trainRespObj[modelId]["accuracy"]["metrics"];
+  let accuracy = metrics["accuracy"];
+  resultString += "<b>Accuracy:</b> " + accuracy.toString() + "<br><br>";
 
-  document.getElementById("trainResults").innerHTML = trainRespObjString;
+  for (let i = 0; i < metricClasses.length; i++) {
+    let cls = metricClasses[i];
+    let clsMetrics = metrics[cls];
+    let clsAddition = cls.includes("avg") ? "" : " class"
+    resultString += "<b>" + cls + clsAddition + ":</b> " + "<br>";
+    for (let j = 0; j < metricTypes.length; j++) {
+      type = metricTypes[j];
+      resultString += type + ": " + clsMetrics[type].toString() + "<br>";
+
+    }
+    resultString += "<br>";
+  }
+  let kappa = metrics["cohens_kappa"];
+  resultString += "<b>Cohens Kappa:</b> " + kappa.toString();
+
+  resultString += "</span>"
+  document.getElementById("trainResults").innerHTML = resultString;
 }
+
+
+const downloadToJSONFile = (content, filename, contentType) => {
+  const a = document.createElement('a');
+  const file = new Blob([content], {type: contentType});
+  
+  a.href= URL.createObjectURL(file);
+  a.download = filename;
+  a.click();
+
+  URL.revokeObjectURL(a.href);
+};
+
+document.querySelector('#saveJSONResult').addEventListener('click', () => {  
+  if (trainRespObj === undefined) {
+    alert("No model training has been done yet. To obtain training results, train a model!");
+    throw "No model training has been done yet.";
+  }
+  let metricsString = JSON.stringify(trainRespObj[modelId]["accuracy"]["metrics"], null, 4);
+  downloadToJSONFile(metricsString, modelId + '-train-metrics.json', 'text/plain');
+});
 
 
 /**
@@ -160,4 +206,6 @@ document.getElementById("trainIdButton").onclick = function() {saveModelId(), se
 document.getElementById('trainFile').addEventListener('change', readTrainFile, false);
 
 // Store the file name on click.
-document.getElementById("trainButton").onclick = function() {createInstances(), trainFromAnswers(modelId, uploadedInstances), writeTrainResults()};
+document.getElementById("trainButton").onclick = function() {createInstances(), trainFromAnswers(modelId, uploadedInstances)};
+
+document.getElementById("trainResults").innerHTML = "No results yet.";

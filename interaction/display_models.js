@@ -49,7 +49,13 @@ setInterval(function() {
 
 
 setInterval(function() {
-    document.getElementById("ids").innerHTML = respObj.modelIds.toString().replace(/,/g, "  |  ");
+  var ids = respObj.modelIds.sort();//.toString().replace(/,/g, "  |  ");
+  let idOutput = "<span>";
+  for (let i = 0; i < ids.length; i++) {
+    idOutput += ids[i] + "<br>"
+  }
+  idOutput += "</span>";
+    document.getElementById("ids").innerHTML = idOutput;
   }, 6000);
 
 
