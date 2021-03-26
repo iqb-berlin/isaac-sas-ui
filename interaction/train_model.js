@@ -14,11 +14,6 @@ function setCurrentId() {
     document.getElementById("currentId").innerHTML = modelId;
 }
 
- 
-function setCurrentFileName() {
-    document.getElementById("currentFileName").innerHTML = fileName;
-}
-
 
 function readTrainFile(e) {
   var file = e.target.files[0];
