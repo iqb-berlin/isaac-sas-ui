@@ -44,7 +44,7 @@ function readPredictFile(e) {
   }
   
   /**
-   * Instances are created on the basis of the CSV input.
+   * Instances are created on the basis of the TSV input.
    * Note that there is no label input here because these will be predicted.
    */
   function createSinglePredictInstance(newTaskId, newItemId, newItemPrompt, newItemTargets, newLearnerId, newAnswer) {

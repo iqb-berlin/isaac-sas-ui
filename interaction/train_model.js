@@ -50,7 +50,7 @@ function processTsvData(tsvAsText) {
 }
 
 /**
- * Instances are created on the basis of the CSV input.
+ * Instances are created on the basis of the TSV input.
  */
 function createSingleInstance(newTaskId, newItemId, newItemPrompt, newItemTargets, newLearnerId, newAnswer, newLabel) {
   return {
