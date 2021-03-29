@@ -87,7 +87,7 @@ function readPredictFile(e) {
         );
   
       instances.push(newInstance);
-      instanceIds.push(line[9])
+      instanceIds.push(line[2])
 
     }
     uploadedPredictInstances = instances;
@@ -140,6 +140,7 @@ function writePredictResults() {
     resultString += "<b>Class Probabilities:</b><br>";
 
     for (cls in classProbabilities) {
+      classProbabilities[cls] = classProbabilities[cls].toFixed(3)
       resultString += "<b>" + cls + ": </b> " + classProbabilities[cls] + "<br>";
 
     }
