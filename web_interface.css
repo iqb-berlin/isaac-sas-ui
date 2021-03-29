@@ -5,11 +5,15 @@
   }
 
 .col {
-    text-align: center;
+    text-align: left;
 }
 
 #ids {
   font-style: italic;
+}
+
+#connection {
+  text-align: center;
 }
 
 #currentId {
@@ -26,5 +30,22 @@
 }
 
 #trainResults {
-  text-align: left;
+  height:200px;
+  overflow-y:scroll;
+  overflow-x:hidden;
+}
+
+#predictFile {
+  text-align-last: center;
+  margin: auto;
+}
+
+#predictResults {
+  height:200px; 
+  overflow-y:scroll; 
+  overflow-x:hidden;
+}
+
+#currentPredictId {
+  font-style: italic;
 }

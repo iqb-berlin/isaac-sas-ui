@@ -27,16 +27,6 @@ function fetchStoredModels() {
 }
 
 
-
-
-
-// Todo: Output all IDs as a bulleted list.
-// function prepare_output(resp_obj) {
-//   for (i=0; i<resp_obj.modelIds.length; i++) {
-
-//   }
-// }
-
 var respObj;
 var respStatus;
 
@@ -49,7 +39,7 @@ setInterval(function() {
 
 
 setInterval(function() {
-  var ids = respObj.modelIds.sort();//.toString().replace(/,/g, "  |  ");
+  var ids = respObj.modelIds.sort();
   let idOutput = "<span>";
   for (let i = 0; i < ids.length; i++) {
     idOutput += ids[i] + "<br>"
