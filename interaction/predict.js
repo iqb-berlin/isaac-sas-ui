@@ -1,13 +1,7 @@
-function savePredictModelId() {
-    predictModelId = document.getElementById('predictId').value;
-    console.log("Predict model ID is: " + predictModelId);
- }
-
-
 function setCurrentPredictId() {
-    document.getElementById("currentPredictId").innerHTML = predictModelId;
+  predictModelId = document.getElementById("predictId").value;
+  document.getElementById("currentPredictId").innerHTML = predictModelId;
 }
-
 
 function readPredictFile(e) {
     var file = e.target.files[0];
@@ -87,7 +81,9 @@ function readPredictFile(e) {
         );
   
       instances.push(newInstance);
-      instanceIds.push(line[2])
+      instanceIds.push(line[2]);
+      // If there are labels in the file, they are added here as well.
+      predictLabels.push(line[6]);
 
     }
     uploadedPredictInstances = instances;
@@ -116,9 +112,8 @@ function readPredictFile(e) {
       })
       .then(data => predictRespObj = data)
       .then(() => {
-        writePredictResults();
         addInstanceIds();
-        console.log(predictRespObj);
+        writePredictResults();
       })
       .catch((error) => {
           console.error('Error:', error);
@@ -131,22 +126,69 @@ function writePredictResults() {
   let resultString = "<span>";
   let instancePredictions = predictRespObj["predictions"];
 
-  for (let i = 0; i < instancePredictions.length; i++) {
-    let prediction = instancePredictions[i]["prediction"];
-    let classProbabilities = instancePredictions[i]["classProbabilities"];
-
-    resultString += "<b>Instance " + ": </b> " + i.toString() + "<br>";
-    resultString += "<b>Predicted Class:</b> " + prediction + "<br>";
-    resultString += "<b>Class Probabilities:</b><br>";
-
-    for (cls in classProbabilities) {
-      classProbabilities[cls] = classProbabilities[cls].toFixed(3)
-      resultString += "<b>" + cls + ": </b> " + classProbabilities[cls] + "<br>";
-
-    }
-    resultString += "<br>";
+  let classLabels = instancePredictions[0]["classProbabilities"];
+  classes = {};
+  confusion_matrices = {};
+  for (cls in classLabels) {
+    classes[cls] = 0;
+    confusion_matrices[cls] = {"tp": 0, "fp":0, "fn": 0, "tn": 0};
   }
 
+  for (let i = 0; i < instancePredictions.length; i++) {
+    let prediction = instancePredictions[i]["prediction"];
+
+    classes[prediction] += 1;
+
+    // This also works if there are labels.
+    let actual = predictLabels[i];
+
+    /**
+     * If the model predicts a class that is not present in the possible predictable
+     * labels, an error is thrown.
+     */
+    try {
+      if (actual == prediction) {
+        confusion_matrices[prediction]["tp"] += 1;
+        confusion_matrices[actual]["tn"] += 1;
+      } else {
+        confusion_matrices[prediction]["fp"] += 1;
+        confusion_matrices[actual]["fn"] += 1;
+      }
+    } catch (error) {
+      alert("It seems that your predict instances are not compatible with the input model. Please Check!")
+      console.error(error);
+      return;
+    }
+  }
+  resultString += "<b>There are " + instancePredictions.length + " instances in total.</b><br><br>";
+
+  for (cls in classes) {
+    resultString += "Class '" + cls + "' was predicted " + classes[cls] + " time(s).<br>";
+  }
+  resultString += "<br>";
+
+  // Set up some advanced metrics if labels exist.
+  for (cls in confusion_matrices) {
+    accuracy = (confusion_matrices[cls]["tp"] / classes[cls]).toFixed(2);
+
+    actual_pos = confusion_matrices[cls]["tp"] + confusion_matrices[cls]["fn"];
+    predicted_pos = confusion_matrices[cls]["tp"] + confusion_matrices[cls]["fp"];
+    true_pos = confusion_matrices[cls]["tp"];
+
+    precision = (true_pos / predicted_pos).toFixed(2);
+    recall = (true_pos / actual_pos).toFixed(2);
+    f1 = 2 * ((precision * recall) / (precision + recall));
+
+    resultString += "Class '" + cls + "' was predicted correctly " + true_pos + " time(s)<br>";
+    resultString += "Accuracy: " + accuracy + "%.<br>";
+    resultString += "F1 Score: " + f1 + "%.<br>";
+    resultString += "Recall: " + recall + "%.<br>";
+    resultString += "Precision: " + precision + "%.<br>";
+    resultString += "<br>";
+  }
+  resultString += "<br>";
+
+  resultString += "If a value is 'NaN', that is because none of the instances was classified as this class.";
   resultString += "</span>"
   document.getElementById("predictResults").innerHTML = resultString;
 }
@@ -154,7 +196,7 @@ function writePredictResults() {
 
 function addInstanceIds() {
   for (let i = 0; i < predictRespObj["predictions"].length; i++) {
-    predictRespObj["predictions"][i]["itemID"] = instanceIds[i];
+    predictRespObj["predictions"][i]["instanceId"] = instanceIds[i];
   }
 }
 
@@ -181,19 +223,40 @@ document.querySelector('#saveJSONPredictResult').addEventListener('click', () =>
 
 
 
-var predictModelId = "-";
+var predictModelId;
 var tsvContents = "";
 var uploadedPredictInstances = null;
 var uploadedInstanceIds = null;
 var predictRespObj;
+var previousIds = [];
+// If there are already labels for the data, 
+// they are stored here (not the typical prediction case).
+var predictLabels = [];
 
 setCurrentPredictId();
 
-// Store the modelId on click.
-document.getElementById("predictIdButton").onclick = function() {savePredictModelId(), setCurrentPredictId()};
+document.getElementById('currentPredictId').addEventListener('change', setCurrentPredictId, false);
 
 document.getElementById('predictFile').addEventListener('change', readPredictFile, false);
 
 document.getElementById("predictButton").onclick = function() {createPredictInstances(), predictFromAnswers(predictModelId, uploadedPredictInstances)};
 
 document.getElementById("predictResults").innerHTML = "No results yet.";
+
+// Constantly update the predict ID for models.
+setInterval(function() {
+
+  if (ids !== undefined) {
+    var select = document.getElementById("predictId"); 
+
+    for(var i = 0; i < ids.length; i++) {
+      var opt = ids[i];
+      if (!previousIds.includes(opt)) {
+        select.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
+        previousIds.push(opt);
+      }
+    
+    }
+  }
+  
+  }, 6000);

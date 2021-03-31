@@ -19,7 +19,6 @@ function fetchStoredModels() {
     return response.json();
   })
   .then(data => respObj = data)
-  .then(() => console.log(respObj))
   .catch((error) => {
       console.error('Error:', error);
       respStatus = 400;
@@ -29,6 +28,7 @@ function fetchStoredModels() {
 
 var respObj;
 var respStatus;
+var ids;
 
 fetchStoredModels();
 
@@ -39,7 +39,7 @@ setInterval(function() {
 
 
 setInterval(function() {
-  var ids = respObj.modelIds.sort();
+  ids = respObj.modelIds.sort();
   let idOutput = "<span>";
   for (let i = 0; i < ids.length; i++) {
     idOutput += ids[i] + "<br>"

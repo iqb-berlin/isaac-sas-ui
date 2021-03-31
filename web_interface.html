@@ -55,8 +55,12 @@
         <h1>Predict</h1>
         <br><br>
         <p>1. Choose the ID of the model you want to use to make predictions for your data.</p>
-        <input type="text" placeholder="Enter a Model ID" id="predictId">
-        <button id="predictIdButton" type="button">Store predict model ID</button>
+
+        <form id="predictDropDown">
+            <select id="predictId" onChange="setCurrentPredictId()">
+              <option>Choose an ID for prediction</option>
+            </select>
+        </form>
         <br><br>
         <p><b>Predictions will be made with the model with this ID:</b></p>
         <div id="currentPredictId"></div>

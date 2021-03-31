@@ -121,7 +121,6 @@ function trainFromAnswers(modelId, uploadedInstances) {
     .then(data => trainRespObj = data)
     .then(() => {
       writeTrainResults();
-      console.log(trainRespObj);
     })
     .catch((error) => {
         console.error('Error:', error);
