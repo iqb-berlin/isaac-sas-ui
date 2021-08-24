@@ -12,7 +12,7 @@ function doesConnectionExist(status) {
 
 function fetchStoredModels() {
   fetch(environment.serverUrl + "/fetchStoredModels", {
-    method: 'POST',
+    method: 'GET',
 })
   .then(response => {
     respStatus = response.status;
