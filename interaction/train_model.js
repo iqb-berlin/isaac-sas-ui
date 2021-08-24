@@ -100,7 +100,7 @@ function createInstances() {
 
 function trainFromAnswers(modelId, uploadedInstances) {
   document.getElementById("trainingIsRunning").innerHTML = "Training is running... This can take some minutes.";
-  if (modelId === "-" | modelId === "") {
+  if (modelId === "-" || modelId === "") {
     alert("No model ID has been chosen. Choose one!");
     throw "No model ID has been chosen.";
   }
@@ -194,12 +194,12 @@ var trainRespObj;
 setCurrentId();
 
 // Store the modelId on click.
-document.getElementById("trainIdButton").onclick = function() {saveModelId(), setCurrentId()};
+document.getElementById("trainIdButton").onclick = function() {saveModelId(); setCurrentId()};
 
 // Store the file name and .
 document.getElementById('trainFile').addEventListener('change', readTrainFile, false);
 
 // Store the file name on click.
-document.getElementById("trainButton").onclick = function() {createInstances(), trainFromAnswers(modelId, uploadedInstances)};
+document.getElementById("trainButton").onclick = function() {createInstances(); trainFromAnswers(modelId, uploadedInstances)};
 
 document.getElementById("trainResults").innerHTML = "No results yet.";
