@@ -11,7 +11,7 @@ function doesConnectionExist(status) {
 }
 
 function fetchStoredModels() {
-  fetch("http://127.0.0.1:9999/fetchStoredModels", {
+  fetch(environment.serverUrl + "/fetchStoredModels", {
     method: 'POST',
 })
   .then(response => {

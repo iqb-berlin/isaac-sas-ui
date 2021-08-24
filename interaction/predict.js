@@ -96,7 +96,7 @@ function readPredictFile(e) {
       alert("No model ID has been chosen. Choose one!");
       throw "No model ID has been chosen.";
     }
-      fetch("http://127.0.0.1:9999/predictFromAnswers", {
+      fetch(environment.serverUrl + "/predictFromAnswers", {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
