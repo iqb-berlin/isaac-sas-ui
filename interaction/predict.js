@@ -126,15 +126,20 @@ function writePredictResults() {
   let resultString = "<span>";
   let instancePredictions = predictRespObj["predictions"];
 
+  let num_instances = instancePredictions.length
   let classLabels = instancePredictions[0]["classProbabilities"];
-  classes = {};
-  confusion_matrices = {};
+  let classNames = [];
+  let classes = {};
+  let confusion_matrices = {};
+  let total_correct = 0;
+
   for (cls in classLabels) {
     classes[cls] = 0;
+    classNames.push(cls);
     confusion_matrices[cls] = {"tp": 0, "fp":0, "fn": 0, "tn": 0};
   }
 
-  for (let i = 0; i < instancePredictions.length; i++) {
+  for (let i = 0; i < num_instances; i++) {
     let prediction = instancePredictions[i]["prediction"];
 
     classes[prediction] += 1;
@@ -150,6 +155,7 @@ function writePredictResults() {
       if (actual == prediction) {
         confusion_matrices[prediction]["tp"] += 1;
         confusion_matrices[actual]["tn"] += 1;
+        total_correct += 1;
       } else {
         confusion_matrices[prediction]["fp"] += 1;
         confusion_matrices[actual]["fn"] += 1;
@@ -160,7 +166,7 @@ function writePredictResults() {
       return;
     }
   }
-  resultString += "<b>There are " + instancePredictions.length + " instances in total.</b><br><br>";
+  resultString += "<b>There are " + num_instances + " instances in total.</b><br><br>";
 
   for (cls in classes) {
     resultString += "Class '" + cls + "' was predicted " + classes[cls] + " time(s).<br>";
@@ -168,25 +174,51 @@ function writePredictResults() {
   resultString += "<br>";
 
   // Set up some advanced metrics if labels exist.
+  
+
+  // Set up overall metrics.
+  let macro_precision = 0;
+  let macro_recall = 0;
+  let macro_f1 = 0;
+
+  // Set up metrics by class.
   for (cls in confusion_matrices) {
-    accuracy = (confusion_matrices[cls]["tp"] / classes[cls]).toFixed(2);
+    let accuracy = (confusion_matrices[cls]["tp"] / classes[cls]);
 
-    actual_pos = confusion_matrices[cls]["tp"] + confusion_matrices[cls]["fn"];
-    predicted_pos = confusion_matrices[cls]["tp"] + confusion_matrices[cls]["fp"];
-    true_pos = confusion_matrices[cls]["tp"];
+    let actual_pos = confusion_matrices[cls]["tp"] + confusion_matrices[cls]["fn"];
+    let predicted_pos = confusion_matrices[cls]["tp"] + confusion_matrices[cls]["fp"];
+    let true_pos = confusion_matrices[cls]["tp"];
 
-    precision = (true_pos / predicted_pos).toFixed(2);
-    recall = (true_pos / actual_pos).toFixed(2);
-    f1 = 2 * ((precision * recall) / (precision + recall));
+    let precision = (true_pos / predicted_pos);
+    let recall = (true_pos / actual_pos);
+    let f1 = 2 * ((precision * recall) / (precision + recall));
 
+    macro_precision += precision;
+    macro_recall += recall;
+    macro_f1 += f1;
+
+    resultString += "<b>Class " + cls + "</b><br>";
     resultString += "Class '" + cls + "' was predicted correctly " + true_pos + " time(s)<br>";
-    resultString += "Accuracy: " + accuracy + "%.<br>";
-    resultString += "F1 Score: " + f1 + "%.<br>";
-    resultString += "Recall: " + recall + "%.<br>";
-    resultString += "Precision: " + precision + "%.<br>";
+    resultString += "Accuracy: " + accuracy.toFixed(2) + "%.<br>";
+    resultString += "F1 Score: " + f1.toFixed(2) + "%.<br>";
+    resultString += "Recall: " + recall.toFixed(2) + "%.<br>";
+    resultString += "Precision: " + precision.toFixed(2) + "%.<br>";
     resultString += "<br>";
   }
   resultString += "<br>";
+
+  accuracy = total_correct / num_instances;
+  num_classes = classNames.length;
+  macro_f1 = macro_f1 / num_classes;
+  macro_precision = macro_precision / num_classes;
+  macro_recall = macro_recall / num_classes;
+
+  resultString += "<b>Overall: </b><br><br>"
+  resultString += "Accuracy: " + accuracy.toFixed(2) + "%.<br>";
+  resultString += "F1 Score: " + macro_f1.toFixed(2) + "%.<br>";
+  resultString += "Recall: " + macro_recall.toFixed(2) + "%.<br>";
+  resultString += "Precision: " + macro_precision.toFixed(2) + "%.<br>";
+  resultString += "<br><br>";
 
   resultString += "If a value is 'NaN', that is because none of the instances was classified as this class.";
   resultString += "</span>"
